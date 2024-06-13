@@ -1,19 +1,22 @@
-import * as THREE from "three";
+import express from 'express';
+import path from 'path';
+import {fileURLToPath} from 'url';
 
-const canvas = document.querySelector("canvas");
-const scene = new THREE.Scene();
-const box = new THREE.BoxGeometry(1, 1, 1);
-const camera = new THREE.PerspectiveCamera(
-  75,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  1000
-);
-camera.position.z = 5;
-scene.add(
-  new THREE.Mesh(box, new THREE.MeshBasicMaterial({ color: 0x00ff00 }))
-);
-scene.add(camera);
-const renderer = new THREE.WebGLRenderer({ canvas });
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.render(scene, camera);
+
+const __filename = fileURLToPath(import.meta.url);
+
+// 👇️ "/home/john/Desktop/javascript"
+const __dirname = path.dirname(__filename);
+
+const app = express()
+const port = 8000
+
+app.use("/src", express.static(__dirname + "/src"));
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '/index.html'));
+  })
+
+app.listen(port, () => {
+console.log(`Example app listening on port ${port}`)
+})  
