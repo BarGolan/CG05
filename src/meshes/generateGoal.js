@@ -37,8 +37,8 @@ export function generateGoal() {
   let netGeometry = new THREE.PlaneGeometry(6, 2.3);
 
   let backNet = new THREE.Mesh(netGeometry, netMaterial);
-  rotateObject(backNet, new THREE.Vector3(1, 0, 0), 28);
-  translateObject(backNet, 0, 0.9, -0.6);
+  rotateObject(backNet, new THREE.Vector3(1, 0, 0), 30);
+  translateObject(backNet, 0, 0.95, -0.6);
 
   const vertices = new Float32Array([
     0, 0, 0,  // Vertex 1
