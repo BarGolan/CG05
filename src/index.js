@@ -9,6 +9,7 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
+camera.position.z = 5;
 scene.add(
   new THREE.Mesh(box, new THREE.MeshBasicMaterial({ color: 0x00ff00 }))
 );
