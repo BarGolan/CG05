@@ -14,3 +14,11 @@ export function degrees_to_radians(degrees) {
   var pi = Math.PI;
   return degrees * (pi / 180);
 }
+
+export function toggleWireframe(scene) {
+  scene.traverse((object) => {
+    if (object.isMesh) {
+      object.material.wireframe = !object.material.wireframe;
+    }
+  });
+}
