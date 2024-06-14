@@ -2,7 +2,8 @@ import * as THREE from "three";
 import { translateObject, rotateObject } from "./utils.js";
 
 export function generateGoal() {
-  // Goal posts and crossbar
+  const goal = new THREE.Group();
+
   let material = new THREE.MeshBasicMaterial({ color: 0xffffff });
   let goalpostGeometry = new THREE.CylinderGeometry(0.1, 0.1, 2, 32);
   let crossbarGeometry = new THREE.CylinderGeometry(0.1, 0.1, 6, 32);
@@ -17,7 +18,6 @@ export function generateGoal() {
   rotateObject(crossbar, new THREE.Vector3(0, 0, 1), 90);
   translateObject(crossbar, 0, 2, 0);
 
-  // Back supports
   let backSupportGeometry = new THREE.CylinderGeometry(0.1, 0.1, 2.3, 32);
   let leftBackSupport = new THREE.Mesh(backSupportGeometry, material);
   rotateObject(leftBackSupport, new THREE.Vector3(1, 0, 0), 30);
@@ -27,7 +27,6 @@ export function generateGoal() {
   rotateObject(rightBackSupport, new THREE.Vector3(1, 0, 0), 30);
   translateObject(rightBackSupport, 3, 1, -0.6);
 
-  // Nets
   let netMaterial = new THREE.MeshBasicMaterial({
     color: 0xd3d3d3,
     side: THREE.DoubleSide,
@@ -54,14 +53,5 @@ export function generateGoal() {
   let rightNet = new THREE.Mesh(triangleGeometry, netMaterial);
   translateObject(rightNet, 3, 0, 0);
 
-  return [
-    leftPost,
-    rightPost,
-    crossbar,
-    leftBackSupport,
-    rightBackSupport,
-    backNet,
-    leftNet,
-    rightNet,
-  ];
+  return goal.add(leftPost, rightPost, crossbar, leftBackSupport, rightBackSupport, backNet, leftNet, rightNet);
 }

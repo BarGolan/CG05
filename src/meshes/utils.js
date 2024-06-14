@@ -5,9 +5,9 @@ export function translateObject(object, x, y, z) {
 }
 
 export function rotateObject(object, axis, angle) {
-    const rotationMatrix = new THREE.Matrix4();
-    rotationMatrix.makeRotationAxis(axis, degrees_to_radians(angle));
-    object.applyMatrix4(rotationMatrix);
+  const rotationMatrix = new THREE.Matrix4();
+  rotationMatrix.makeRotationAxis(axis, degrees_to_radians(angle));
+  object.applyMatrix4(rotationMatrix);
 }
 
 export function degrees_to_radians(degrees) {
@@ -17,8 +17,12 @@ export function degrees_to_radians(degrees) {
 
 export function toggleWireframe(scene) {
   scene.traverse((object) => {
-    if (object.isMesh) {
-      object.material.wireframe = !object.material.wireframe;
-    }
+    object.material.wireframe = !object.material.wireframe;
   });
+}
+
+export function scaleObject(object, factor) {
+  const scaleMatrix = new THREE.Matrix4();
+  scaleMatrix.makeScale(factor, factor, factor);
+  object.applyMatrix4(scaleMatrix);
 }
