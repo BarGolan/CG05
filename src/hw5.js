@@ -58,13 +58,9 @@ const moveBallToGoalSecondAxis = () => {
   for (let i = 0; i < ballGoalDirectionSpeed; i++) {
     translateObject(
       ball,
-      -ballGoalDirectionSpeed *
-        initialPathRadius *
-        Math.cos(ballGoalDirectionAngle),
+      -initialPathRadius * Math.cos(ballGoalDirectionAngle),
       0,
-      -ballGoalDirectionSpeed *
-        initialPathRadius *
-        Math.sin(ballGoalDirectionAngle)
+      -initialPathRadius * Math.sin(ballGoalDirectionAngle)
     );
     ballGoalDirectionAngle += 0.01;
   }
@@ -94,7 +90,7 @@ const keyDownHandler = (e) => {
   } else if (e.key === "2") {
     isBallToGoalMovementSecondAxis = !isBallToGoalMovementSecondAxis;
   } else if (e.key === "3") {
-    scaleObject(goal, 0.95);
+    scaleObject(goal, 0.95, 0.95, 0.95);
   } else if (e.key === "ArrowDown") {
     ballGoalDirectionSpeed = Math.max(0, ballGoalDirectionSpeed - 1);
   } else if (e.key === "ArrowUp") {
@@ -103,7 +99,7 @@ const keyDownHandler = (e) => {
     toggleWireframe(scene);
   } else if (e.key === "g") {
     displayGoalKeeper = !displayGoalKeeper;
-    displayGoalKeeper ? scene.add(goalKeeper) : scene.remove(goalKeeper)
+    displayGoalKeeper ? scene.add(goalKeeper) : scene.remove(goalKeeper);
   }
 };
 
@@ -146,11 +142,11 @@ function generateGoalKeeper() {
   const gloveMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
 
   const leftGlove = new THREE.Mesh(gloveGeometry, gloveMaterial);
-  translateObject(leftGlove,  -0.75, 2.5, 0);
+  translateObject(leftGlove, -0.75, 2.5, 0);
   rotateObject(leftGlove, new THREE.Vector3(0, 0, 1), -45);
 
   const rightGlove = new THREE.Mesh(gloveGeometry, gloveMaterial);
-  translateObject(rightGlove,  0.75, 2.5, 0);
+  translateObject(rightGlove, 0.75, 2.5, 0);
   rotateObject(rightGlove, new THREE.Vector3(0, 0, 1), 45);
 
   const legGeometry = new THREE.CylinderGeometry(0.25, 0.25, 2);
@@ -174,7 +170,7 @@ function generateGoalKeeper() {
     rightLeg
   );
   translateObject(goalkeeper, 0, 1, 0);
-  scaleObject(goalkeeper, 0.4);
+  scaleObject(goalkeeper, 0.4, 0.4, 0.4);
 
   return goalkeeper;
 }
@@ -187,9 +183,20 @@ function generateGoal() {
   let material = new THREE.MeshBasicMaterial({ color: 0xffffff });
   let goalpostGeometry = new THREE.CylinderGeometry(0.1, 0.1, 2, 32);
   let crossbarGeometry = new THREE.CylinderGeometry(0.1, 0.1, 6, 32);
+  let goalPostRingGeometry = new THREE.SphereGeometry(0.2, 32, 32);
+  let backSupportGeometry = new THREE.CylinderGeometry(0.1, 0.1, 2.3, 32);
+  let netGeometry = new THREE.PlaneGeometry(6, 2.3);
+
+  let leftPostRing = new THREE.Mesh(goalPostRingGeometry, material);
+  scaleObject(leftPostRing, 1, 0.2, 1);
+  translateObject(leftPostRing, -3, 0, 0);
 
   let leftPost = new THREE.Mesh(goalpostGeometry, material);
   translateObject(leftPost, -3, 1, 0);
+
+  let rightPostRing = new THREE.Mesh(goalPostRingGeometry, material);
+  scaleObject(rightPostRing, 1, 0.2, 1);
+  translateObject(rightPostRing, 3, 0, 0);
 
   let rightPost = new THREE.Mesh(goalpostGeometry, material);
   translateObject(rightPost, 3, 1, 0);
@@ -198,10 +205,17 @@ function generateGoal() {
   rotateObject(crossbar, new THREE.Vector3(0, 0, 1), 90);
   translateObject(crossbar, 0, 2, 0);
 
-  let backSupportGeometry = new THREE.CylinderGeometry(0.1, 0.1, 2.3, 32);
+  let leftBackSupportRing = new THREE.Mesh(goalPostRingGeometry, material);
+  scaleObject(leftBackSupportRing, 1, 0.2, 1);
+  translateObject(leftBackSupportRing, -3, 0, -1.2);
+
   let leftBackSupport = new THREE.Mesh(backSupportGeometry, material);
   rotateObject(leftBackSupport, new THREE.Vector3(1, 0, 0), 30);
   translateObject(leftBackSupport, -3, 1, -0.6);
+
+  let rightBackSupportRing = new THREE.Mesh(goalPostRingGeometry, material);
+  scaleObject(rightBackSupportRing, 1, 0.2, 1);
+  translateObject(rightBackSupportRing, 3, 0, -1.2);
 
   let rightBackSupport = new THREE.Mesh(backSupportGeometry, material);
   rotateObject(rightBackSupport, new THREE.Vector3(1, 0, 0), 30);
@@ -213,19 +227,27 @@ function generateGoal() {
     transparent: true,
     opacity: 0.8,
   });
-  let netGeometry = new THREE.PlaneGeometry(6, 2.3);
 
   let backNet = new THREE.Mesh(netGeometry, netMaterial);
   rotateObject(backNet, new THREE.Vector3(1, 0, 0), 30);
   translateObject(backNet, 0, 0.95, -0.6);
 
   const vertices = new Float32Array([
-    0, 0, 0,  // Vertex 1
-    0, 2, 0, // Vertex 2
-    0, 0, -1.2   // Vertex 3
-]);
+    0,
+    0,
+    0, // Vertex 1
+    0,
+    2,
+    0, // Vertex 2
+    0,
+    0,
+    -1.2, // Vertex 3
+  ]);
   let triangleGeometry = new THREE.BufferGeometry();
-  triangleGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+  triangleGeometry.setAttribute(
+    "position",
+    new THREE.BufferAttribute(vertices, 3)
+  );
 
   let leftNet = new THREE.Mesh(triangleGeometry, netMaterial);
   translateObject(leftNet, -3, 0, 0);
@@ -233,7 +255,20 @@ function generateGoal() {
   let rightNet = new THREE.Mesh(triangleGeometry, netMaterial);
   translateObject(rightNet, 3, 0, 0);
 
-  return goal.add(leftPost, rightPost, crossbar, leftBackSupport, rightBackSupport, backNet, leftNet, rightNet);
+  return goal.add(
+    leftPost,
+    leftPostRing,
+    rightPost,
+    rightPostRing,
+    crossbar,
+    leftBackSupportRing,
+    leftBackSupport,
+    rightBackSupportRing,
+    rightBackSupport,
+    backNet,
+    leftNet,
+    rightNet
+  );
 }
 
 // ====================== Generate Ball =============================
@@ -268,12 +303,14 @@ function degrees_to_radians(degrees) {
 
 function toggleWireframe(scene) {
   scene.traverse((object) => {
-    object.material.wireframe = !object.material.wireframe;
+    if (object.isMesh) {
+      object.material.wireframe = !object.material.wireframe;
+    }
   });
 }
 
-function scaleObject(object, factor) {
+function scaleObject(object, xFactor, yFactor, zFactor) {
   const scaleMatrix = new THREE.Matrix4();
-  scaleMatrix.makeScale(factor, factor, factor);
+  scaleMatrix.makeScale(xFactor, yFactor, zFactor);
   object.applyMatrix4(scaleMatrix);
 }
